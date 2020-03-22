@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% for message in messages %}
+    <div class="alert {{message.class}}">{{message.content}}</div>
+{% endfor %}
+<h2>Register form</h2>
+<form class="register-form" method="post">
+    <div class="form-group">
+        <label for="email-input">Your Email</label>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <div class="input-group-text">@</div>
+            </div>
+            <input type="email" name="email" id="email-input" class="form-control"
+                   value="{%if form %} {{form.email}} {% endif %}" required>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="password-input">Password</label>
+            <input type="password" name="password" id="password-input" placeholder="Password"
+                   class="form-control" required>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="password-repeat-input">Repeat Password</label>
+            <input type="password" name="password-repeat" id="password-repeat-input" placeholder="Password"
+                   class="form-control" required>
+        </div>
+    </div>
+    <hr>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="surname-input">Your Surname</label>
+            <input type="text" name="surname" id="surname-input" class="form-control"
+                   value="{%if form %} {{form.surname}} {% endif %}" placeholder="Surname" required>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="name-input">Your Name</label>
+            <input type="text" name="name" id="name-input" class="form-control"
+                   value="{%if form %} {{form.name}} {% endif %}" placeholder="Name" required>
+        </div>
+    </div>
+    <hr>
+    <div class="form-row">
+        <div class="form-group col-md-2">
+            <label for="age-input" class="col-form-label-sm">Your Age</label>
+            <input type="number" name="age" class="form-control form-control-sm"
+                   value="{%if form %} {{form.age}} {% endif %}" id="age-input"
+                   placeholder="Age" min="14" max="70" required>
+        </div>
+        <div class="form-group col-md-5">
+            <label for="position-input" class="col-form-label-sm">Your Position</label>
+            <input type="text" name="position" id="position-input" placeholder="Position"
+                   value="{%if form %} {{form.position}} {% endif %}"
+                   class="form-control form-control-sm" required>
+        </div>
+        <div class="form-group col-md-5">
+            <label for="speciality-input" class="col-form-label-sm">Your Speciality</label>
+            <input type="text" name="speciality" id="speciality-input" placeholder="Speciality"
+                   value="{%if form %} {{form.speciality}} {% endif %}"
+                   class="form-control form-control-sm" required>
+        </div>
+    </div>
+    <hr>
+    <div class="form-group">
+        <label for="address-input">Your Address</label>
+        <input type="text" name="address" id="address-input" placeholder="module_1 etc."
+               value="{%if form %} {{form.address}} {% endif %}" class="form-control" required>
+    </div>
+    <button class="btn btn-primary" type="submit">Submit form</button>
+</form>
+
+{% endblock %}

@@ -1,0 +1,42 @@
+.title {
+    background-color: #94979c;
+}
+
+.cell {
+    background-color: #adc0e0;
+}
+
+.title, .cell {
+    padding: 8px;
+    border: 1px solid white;
+}
+
+.not-finished {
+    background-color: #e0adce;
+}
+
+.item {
+    margin: 20px;
+    border: 2px solid gray;
+}
+
+.action-title {
+    padding: 10px 20px;
+}
+
+.mission {
+    background-color: #eaeaea;
+    padding: 8px;
+}
+
+.mission-logo {
+    margin: 12px 0;
+    font-family: cursive;
+    font-size: 17px;
+    text-align: end;
+}
+
+.slogan {
+    color: #b3d2ec;
+    margin: 7px;
+}

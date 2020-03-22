@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 text-center">
+            <h3>Works log</h3>
+        </div>
+    </div>
+    
+    {% for action in actions %}
+    <div class="container-fluid item">
+        <div class="row">
+            <div class="col-12 action-title"><h4>Action #{{action.id}}</h4></div>
+        </div>
+        <div class="row">
+            <div class="col-4 title">Title of activity</div>
+            <div class="col-2 title">Team leader</div>
+            <div class="col-2 title">Duration</div>
+            <div class="col-2 title">List of collaborators</div>
+            <div class="col-2 title">Is finished</div>
+        </div>
+        <div class="row">
+            <div class="col-4 cell">{{action.title}}</div>
+            <div class="col-2 cell">{{action.leader}}</div>
+            <div class="col-2 cell">{{action.duration}} hours</div>
+            <div class="col-2 cell">{{action.collaborators}}</div>
+            <div class="col-2 cell {% if not action.finished %} not-finished {% endif %}">
+                {% if not action.finished %} is not finished
+                {% else %} is finished
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
