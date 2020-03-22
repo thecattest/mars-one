@@ -13,13 +13,13 @@
 </head>
 <body>
     <div class="row align-items-center mission">
-        <h2 class="col-md-7 mission-name">Миссия Колонизация Марса</h2>
-        <p class="col-md-3 mission-user" title="log out">
+        <h2 class="col-md-7 col-sm-6 mission-name">Миссия Колонизация Марса</h2>
+        <p class="col-md-3 col-sm-3 mission-user" title="log out">
             {% if current_user.is_authenticated %}
             <a class="alert-link" href="/logout">{{ current_user.name + " " + current_user.surname }}</a>
             {% endif %}
         </p>
-        <p class="col-md-2 mission-logo">Mars One</p>
+        <p class="col-md-2 col-sm-3 mission-logo">Mars One</p>
     </div>
     <div class="slogan">
         <h4>И на Марсе будут яблони цвести!</h4>
