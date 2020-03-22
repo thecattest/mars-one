@@ -31,9 +31,23 @@
 
 .mission-logo {
     margin: 12px 0;
-    font-family: cursive;
-    font-size: 17px;
+    font-family: monospace;
+    font-size: 20px;
     text-align: end;
+    font-weight: 600;
+}
+
+.mission-user{
+    margin: 12px 0;
+}
+
+.mission-user a{
+    color: black;
+    font-weight: 700;
+}
+.mission-user a:hover{
+    text-decoration: none;
+    text-shadow: 0px 0px 20px #4c4040;
 }
 
 .slogan {

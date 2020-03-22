@@ -3,7 +3,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user
 
 from data import db_session
 from data.__all_models import *
-from forms.__all_forms import LoginForm, RegisterForm
+from forms.__all_forms import *
 
 import datetime
 
