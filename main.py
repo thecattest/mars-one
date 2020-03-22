@@ -1,9 +1,11 @@
 from flask import Flask, render_template, request
 
 from data import db_session
-from data.__all_models import User, Jobs
+from data.__all_models import User, Jobs, Department
+from forms import *
 
 import sqlalchemy
+import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -12,52 +14,33 @@ db_session.global_init("db/mars.sqlite")
 session = db_session.create_session()
 
 
+def log(error):
+    message = str(type(error)) + ": " + str(error)
+    with open('log.txt', 'a') as file:
+        file.write(message + '\n' + str(datetime.datetime.now()) + '\n-----\n')
+
 def main():
     app.run()
 
 
 def register_user(form):
-    messages = []
-    error = False
-
-    email = form.get("email").strip()
-    password = form.get("password").strip()
-    password2 = form.get("password-repeat").strip()
-    surname = form.get("surname").strip()
-    name = form.get("name").strip()
-    age = form.get("age").strip()
-    position = form.get("position").strip()
-    speciality = form.get("speciality").strip()
-    address = form.get("address").strip()
-
-    if password != password2:
-        messages.append({"content": "Passwords do not match!", "class": "alert-danger"})
-        error = True
-    if not "@" in email:
-        messages.append({"content": "Invalid email", "class": "alert-danger"})
-        error = True
-    if not error:
-        user = User()
-        user.email = email
-        user.name = name
-        user.surname = surname
-        user.age = int(age)
-        user.position = position
-        user.speciality = speciality
-        user.address = address
-        user.set_password(password)
-        try:
-            session.add(user)
-            session.commit()
-        except sqlalchemy.exc.IntegrityError:
-            messages.append({"content": "User with this email already exists", "class": "alert-danger"})
-            session.rollback()
-        else:
-            messages.append({"content": "User was successfully registered!", "class": "alert-success"})
-
-    return not error, messages, form
-
-
+    user = User()
+    user.email = form.email.data
+    user.name = form.name.data
+    user.surname = form.surname.data
+    user.age = form.age.data
+    user.position = form.position.data
+    user.speciality = form.speciality.data
+    user.address = form.address.data
+    user.set_password(form.password.data)
+    # try:
+    session.add(User)
+    session.commit()
+    # except Exception as error:
+      #  log(error)
+       # return "Error was occured. Please, try again", "alert-danger"
+    # else:
+    return "User was successfully registered!", "alert-success"
 
 
 @app.route("/")
@@ -77,18 +60,12 @@ def index():
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
-    params = {
-        "title": "Register",
-        "form": 0
-    }
-    if request.method == "GET":
-        return render_template("register.html", **params)
-    elif request.method == "POST":
-        ok, messages, form = register_user(request.form)
-        params["messages"] = messages
-        if ok:
-            params["form"] = form
-        return render_template("register.html", **params)
+    form = RegisterForm()
+    messages = []
+    if form.validate_on_submit():
+        message, mes_class = register_user(form)
+        messages.append((message, mes_class))
+    return render_template("register.html", title="Register", form=form, messages=messages)
 
 
 if __name__ == '__main__':

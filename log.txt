@@ -1,0 +1,12 @@
+<class 'sqlalchemy.orm.exc.UnmappedInstanceError'>: Class 'sqlalchemy.ext.declarative.api.DeclarativeMeta' is not mapped; was a class (data.users.User) supplied where an instance was required?
+2020-03-22 16:14:35.934822
+-----
+<class 'sqlalchemy.orm.exc.UnmappedInstanceError'>Class 'sqlalchemy.ext.declarative.api.DeclarativeMeta' is not mapped; was a class (data.users.User) supplied where an instance was required?
+2020-03-22 16:34:10.411305
+-----
+<class 'sqlalchemy.orm.exc.UnmappedInstanceError'>: Class 'sqlalchemy.ext.declarative.api.DeclarativeMeta' is not mapped; was a class (data.users.User) supplied where an instance was required?
+2020-03-22 16:40:00.800138
+-----
+<class 'sqlalchemy.orm.exc.UnmappedInstanceError'>: Class 'sqlalchemy.ext.declarative.api.DeclarativeMeta' is not mapped; was a class (data.users.User) supplied where an instance was required?
+2020-03-22 16:45:46.847682
+-----
