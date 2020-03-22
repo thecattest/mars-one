@@ -1,13 +1,9 @@
 from flask import Flask, render_template, request, redirect, make_response, session
-from flask_login import LoginManager, login_user, login_required
-
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, IntegerField, BooleanField
-from wtforms.fields.html5 import EmailField
-from wtforms.validators import DataRequired, EqualTo, ValidationError
+from flask_login import LoginManager, login_user, login_required, logout_user
 
 from data import db_session
-from data.__all_models import User, Jobs, Department
+from data.__all_models import *
+from forms.__all_forms import LoginForm, RegisterForm
 
 import datetime
 
@@ -56,38 +52,6 @@ def register_user(form):
         return True, ""
 
 
-def validate_email(form, field):
-    session = db_session.create_session()
-    user = session.query(User).filter(User.email == field.data).first()
-    if not user is None:
-        raise ValidationError('User with this email already exists')
-
-
-class RegisterForm(FlaskForm):
-    email = EmailField('Your Email', validators=[DataRequired(), validate_email])
-    password = PasswordField('Password', validators=[DataRequired(),
-                                                   EqualTo('password_confirmation', message='Passwords must match')])
-    password_confirmation = PasswordField('Repeat Password', validators=[DataRequired()])
-
-    surname = StringField("Your Surname", validators=[DataRequired()])
-    name = StringField("Your Name", validators=[DataRequired()])
-    age = IntegerField("Your age", validators=[DataRequired()])
-
-    position = StringField("Your Position", validators=[DataRequired()])
-    speciality = StringField("Speciality", validators=[DataRequired()])
-
-    address = StringField("Your address", validators=[DataRequired()])
-
-    submit = SubmitField('Register')
-
-
-class LoginForm(FlaskForm):
-    email = EmailField('Email', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember_me = BooleanField('Remember me')
-    submit = SubmitField('Log in')
-
-
 @app.route("/")
 @app.route("/index")
 def index():
@@ -130,6 +94,13 @@ def login():
                                message="Password or login is incorrect",
                                form=form)
     return render_template('login.html', title='Log in', form=form)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
 
 
 @app.route("/cookie_test")
