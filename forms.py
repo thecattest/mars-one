@@ -15,7 +15,7 @@ def validate_email(form, field):
 
 
 class RegisterForm(FlaskForm):
-    email = EmailField('Your Email', validators=[InputRequired(), ]) # validate_email])
+    email = EmailField('Your Email', validators=[InputRequired(), validate_email])
     password = PasswordField('Password', validators=[InputRequired(),
                                                    EqualTo('password_confirmation', message='Passwords must match')])
     password_confirmation = PasswordField('Repeat Password', validators=[InputRequired()])

@@ -2,7 +2,7 @@ from flask import Flask, render_template, request
 
 from data import db_session
 from data.__all_models import User, Jobs, Department
-from forms import *
+from forms import RegisterForm
 
 import sqlalchemy
 import datetime
@@ -19,6 +19,7 @@ def log(error):
     with open('log.txt', 'a') as file:
         file.write(message + '\n' + str(datetime.datetime.now()) + '\n-----\n')
 
+
 def main():
     app.run()
 
@@ -33,14 +34,14 @@ def register_user(form):
     user.speciality = form.speciality.data
     user.address = form.address.data
     user.set_password(form.password.data)
-    # try:
-    session.add(User)
-    session.commit()
-    # except Exception as error:
-      #  log(error)
-       # return "Error was occured. Please, try again", "alert-danger"
-    # else:
-    return "User was successfully registered!", "alert-success"
+    try:
+        session.add(user)
+        session.commit()
+    except Exception as error:
+        log(error)
+        return "Error was occured. Please, try again", "alert-danger"
+    else:
+        return "User was successfully registered!", "alert-success"
 
 
 @app.route("/")
