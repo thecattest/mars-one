@@ -16,3 +16,27 @@
 (Background on this error at: http://sqlalche.me/e/gkpj)
 2020-03-22 17:20:52.260070
 -----
+<class 'sqlalchemy.exc.IntegrityError'>: (sqlite3.IntegrityError) UNIQUE constraint failed: users.email
+[SQL: INSERT INTO users (surname, name, age, position, speciality, address, email, hashed_password, modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: ('sdf', 'sdf', 23, 'sdf', 'sdf', 'sdf', 'vodopyanov999@gmail.com', 'pbkdf2:sha256:150000$Ljn1sfH8$e7df0483c1a03ae52cb07f96bf42489884d092ef0ba827c88d6895a65b8f593b', '2020-03-22 18:29:55.521089')]
+(Background on this error at: http://sqlalche.me/e/gkpj)
+2020-03-22 18:29:55.523598
+-----
+<class 'sqlalchemy.exc.IntegrityError'>: (sqlite3.IntegrityError) UNIQUE constraint failed: users.email
+[SQL: INSERT INTO users (surname, name, age, position, speciality, address, email, hashed_password, modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: ('sdf', 'sdf', 23, 'sdf', 'sdf', 'sdf', 'vodopyanov999@gmail.com', 'pbkdf2:sha256:150000$PD8WRn4Z$03cae0d06a3d4bf224cb12f3144469af2bea10707810f89b219c99abc5e58ce9', '2020-03-22 18:30:02.386940')]
+(Background on this error at: http://sqlalche.me/e/gkpj)
+2020-03-22 18:30:02.387943
+-----
+<class 'sqlalchemy.exc.IntegrityError'>: (sqlite3.IntegrityError) UNIQUE constraint failed: users.email
+[SQL: INSERT INTO users (surname, name, age, position, speciality, address, email, hashed_password, modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: ('sdf', 'sdf', 23, 'sdf', 'sdf', 'sdf', 'vodopyanov999@gmail.com', 'pbkdf2:sha256:150000$XyUjLXVE$ac3d3eb5ea8117a8192f1a1dd7fdcbaa5a46312fafbc8d888c077be76ee9a826', '2020-03-22 18:31:03.030587')]
+(Background on this error at: http://sqlalche.me/e/gkpj)
+2020-03-22 18:31:03.034595
+-----
+<class 'sqlalchemy.exc.IntegrityError'>: (sqlite3.IntegrityError) UNIQUE constraint failed: users.email
+[SQL: INSERT INTO users (surname, name, age, position, speciality, address, email, hashed_password, modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: ('sdf', 'sdf', 23, 'sdf', 'sdf', 'sdf', 'vodopyanov999@gmail.com', 'pbkdf2:sha256:150000$AzvZhrEE$827e9523e311cf7bd0ec8003d3c4bc0ca591fb0dad0fe6dac41e2d8cd2626ede', '2020-03-22 18:31:15.751988')]
+(Background on this error at: http://sqlalche.me/e/gkpj)
+2020-03-22 18:31:15.754495
+-----
