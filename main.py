@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, redirect, make_response, session
+from flask_login import LoginManager, login_user, login_required
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, IntegerField
+from wtforms import StringField, PasswordField, SubmitField, IntegerField, BooleanField
 from wtforms.fields.html5 import EmailField
-from wtforms.validators import InputRequired, EqualTo, ValidationError
+from wtforms.validators import DataRequired, EqualTo, ValidationError
 
 from data import db_session
 from data.__all_models import User, Jobs, Department
@@ -11,16 +12,17 @@ from data.__all_models import User, Jobs, Department
 import datetime
 
 app = Flask(__name__)
+login_manager = LoginManager()
+login_manager.init_app(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 db_session.global_init("db/mars.sqlite")
 
 
-def validate_email(form, field):
+@login_manager.user_loader
+def load_user(user_id):
     session = db_session.create_session()
-    user = session.query(User).filter(User.email == field.data).first()
-    if not user is None:
-        raise ValidationError('User with this email already exists')
+    return session.query(User).get(user_id)
 
 
 def log(error):
@@ -49,27 +51,41 @@ def register_user(form):
         session.commit()
     except Exception as error:
         log(error)
-        return False, "Error was occured. Please, try again", "alert-danger"
+        return False, "Error was occurred. Please, try again"
     else:
-        return True, "User was successfully registered!", "alert-success"
+        return True, ""
+
+
+def validate_email(form, field):
+    session = db_session.create_session()
+    user = session.query(User).filter(User.email == field.data).first()
+    if not user is None:
+        raise ValidationError('User with this email already exists')
 
 
 class RegisterForm(FlaskForm):
-    email = EmailField('Your Email', validators=[InputRequired(), validate_email])
-    password = PasswordField('Password', validators=[InputRequired(),
+    email = EmailField('Your Email', validators=[DataRequired(), validate_email])
+    password = PasswordField('Password', validators=[DataRequired(),
                                                    EqualTo('password_confirmation', message='Passwords must match')])
-    password_confirmation = PasswordField('Repeat Password', validators=[InputRequired()])
+    password_confirmation = PasswordField('Repeat Password', validators=[DataRequired()])
 
-    surname = StringField("Your Surname", validators=[InputRequired()])
-    name = StringField("Your Name", validators=[InputRequired()])
-    age = IntegerField("Your age", validators=[InputRequired()])
+    surname = StringField("Your Surname", validators=[DataRequired()])
+    name = StringField("Your Name", validators=[DataRequired()])
+    age = IntegerField("Your age", validators=[DataRequired()])
 
-    position = StringField("Your Position", validators=[InputRequired()])
-    speciality = StringField("Speciality", validators=[InputRequired()])
+    position = StringField("Your Position", validators=[DataRequired()])
+    speciality = StringField("Speciality", validators=[DataRequired()])
 
-    address = StringField("Your address", validators=[InputRequired()])
+    address = StringField("Your address", validators=[DataRequired()])
 
     submit = SubmitField('Register')
+
+
+class LoginForm(FlaskForm):
+    email = EmailField('Email', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    remember_me = BooleanField('Remember me')
+    submit = SubmitField('Log in')
 
 
 @app.route("/")
@@ -91,14 +107,29 @@ def index():
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
+    message = ""
     form = RegisterForm()
-    messages = []
     if form.validate_on_submit():
-        ok, message, mes_class = register_user(form)
-        messages.append((message, mes_class))
+        ok, message = register_user(form)
+        print(message)
         if ok:
             return redirect('/register')
-    return render_template("register.html", title="Register", form=form, messages=messages)
+    return render_template("register.html", title="Register", form=form, message=message)
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        session = db_session.create_session()
+        user = session.query(User).filter(User.email == form.email.data).first()
+        if user and user.check_password(form.password.data):
+            login_user(user, remember=form.remember_me.data)
+            return redirect("/")
+        return render_template("login.html",
+                               message="Password or login is incorrect",
+                               form=form)
+    return render_template('login.html', title='Log in', form=form)
 
 
 @app.route("/cookie_test")

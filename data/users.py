@@ -5,9 +5,10 @@ from sqlalchemy import orm
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .db_session import SqlAlchemyBase
+from flask_login import UserMixin
 
 
-class User(SqlAlchemyBase):
+class User(SqlAlchemyBase, UserMixin):
     __tablename__ = 'users'
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
@@ -25,7 +26,7 @@ class User(SqlAlchemyBase):
                                       default=datetime.datetime.now)
 
     jobs = orm.relation("Jobs", back_populates='user')
-    # departments = orm.relation("Department", back_populates='user')
+    departments = orm.relation("Department", back_populates='user')
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)

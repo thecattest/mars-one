@@ -2,10 +2,10 @@
 
 {% block content %}
 
-{% for message in messages %}
-<div class="alert {{message[1]}}">{{message[0]}}</div>
-{% endfor %}
 <h2>Register form</h2>
+{% if message %}
+<div class="alert alert-danger">{{message}}</div>
+{% endif %}
 <form class="register-form" method="post">
     {{form.hidden_tag()}}
     <div class="form-row">
@@ -17,12 +17,12 @@
                 </div>
                 {{ form.email(class="form-control", type="email") }}
             </div>
+            {% for error in form.email.errors %}
+            <small class="form-text red">
+                {{ error }}
+            </small>
+            {% endfor %}
         </div>
-        {% for error in form.email.errors %}
-        <small class="form-text red">
-            {{ error }}
-        </small>
-        {% endfor %}
     </div>
     <div class="form-row">
         <div class="form-group col-md-6">
