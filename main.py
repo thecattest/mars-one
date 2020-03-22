@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 
 from data import db_session
 from data.__all_models import User, Jobs, Department
@@ -39,9 +39,9 @@ def register_user(form):
         session.commit()
     except Exception as error:
         log(error)
-        return "Error was occured. Please, try again", "alert-danger"
+        return False, "Error was occured. Please, try again", "alert-danger"
     else:
-        return "User was successfully registered!", "alert-success"
+        return True, "User was successfully registered!", "alert-success"
 
 
 @app.route("/")
@@ -64,8 +64,10 @@ def register():
     form = RegisterForm()
     messages = []
     if form.validate_on_submit():
-        message, mes_class = register_user(form)
+        ok, message, mes_class = register_user(form)
         messages.append((message, mes_class))
+        if ok:
+            return redirect('/register')
     return render_template("register.html", title="Register", form=form, messages=messages)
 
 
