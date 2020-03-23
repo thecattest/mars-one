@@ -97,7 +97,7 @@ def logout():
 
 @app.route("/job", methods=["GET", "POST"])
 @login_required
-def adding_job():
+def add_job():
     form = JobForm()
     message = ""
     if form.validate_on_submit():
@@ -129,7 +129,7 @@ def adding_job():
 
 @app.route("/job/<int:job_id>", methods=["GET", "POST"])
 @login_required
-def editing_job(job_id):
+def edit_job(job_id):
     form = JobForm()
     message = ""
     if request.method == "GET":
@@ -172,6 +172,21 @@ def editing_job(job_id):
                            form=form,
                            message=message,
                            button="Edit")
+
+
+@app.route("/delete_job/<int:job_id>", methods=["GET", "POST"])
+@login_required
+def delete_job(job_id):
+    session = db_session.create_session()
+    job = session.query(Jobs).filter(Jobs.id == job_id).first()
+    if job:
+        if current_user.id != 1 and current_user.id != job.creator:
+            abort(403)
+        session.delete(job)
+        session.commit()
+        return redirect("/")
+    else:
+        abort(404)
 
 
 @app.route("/cookie_test")
