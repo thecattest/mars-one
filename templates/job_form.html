@@ -31,7 +31,7 @@
         </div>
         <div class="form-group col-md-5">
             {{form.hours.label}}
-            {{ form.hours(class="form-control", type="number", placeholder="Hours", value="15", required=True) }}
+            {{ form.hours(class="form-control", type="number", placeholder="Hours", required=True) }}
             {% for error in form.hours.errors %}
             <small class="form-text red">
                 {{ error }}
@@ -65,7 +65,7 @@
     </div>
     <div class="form-row">
         <div class="form-group col-md-1">
-            {{ form.submit(class="btn btn-success", type="submit") }}
+            {{ form.submit(class="btn btn-success", type="submit", value=button) }}
         </div>
         <div class="form-group col-md-1">
             <a href="/" class="btn btn-secondary">Back</a>

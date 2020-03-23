@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request, redirect, make_response, session
-from flask_login import LoginManager, login_user, login_required, logout_user
+from flask import Flask, render_template, request, redirect, make_response, session, abort
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 from data import db_session
 db_session.global_init("db/mars.sqlite")
@@ -31,61 +31,14 @@ def main():
     app.run(port=8000)
 
 
-def register_user(form):
-    session = db_session.create_session()
-    user = User()
-    user.email = form.email.data
-    user.name = form.name.data
-    user.surname = form.surname.data
-    user.age = form.age.data
-    user.position = form.position.data
-    user.speciality = form.speciality.data
-    user.address = form.address.data
-    user.set_password(form.password.data)
-    try:
-        session.add(user)
-        session.commit()
-    except Exception as error:
-        log(error)
-        return False, "Error was occurred. Please, try again"
-    else:
-        return True, ""
-
-
-def add_job(form):
-    session = db_session.create_session()
-    job = Jobs()
-    job.job = form.name.data
-    job.work_size = form.hours.data
-    job.collaborators = form.collaborators.data
-    job.team_leader = form.team_leader.data
-    job.is_finished = form.finished.data
-    try:
-        session.add(job)
-        session.commit()
-    except Exception as error:
-        log(error)
-        return False, "Error was occurred. Please, try again"
-    else:
-        return True, ""
-
-
-
 @app.route("/")
 @app.route("/index")
 def index():
     session = db_session.create_session()
-    actions = []
-    for action in session.query(Jobs):
-        actions.append({
-            "id": action.id,
-            "title": action.job,
-            "leader": action.user.surname + ' ' + action.user.name,
-            "duration": action.work_size,
-            "collaborators": action.collaborators,
-            "finished": action.is_finished
-        })
-    return render_template("actions.html", actions=actions, title="Список работ")
+    actions = session.query(Jobs).all()
+    return render_template("actions.html",
+                           actions=actions,
+                           title="Список работ")
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -93,10 +46,30 @@ def register():
     message = ""
     form = RegisterForm()
     if form.validate_on_submit():
-        ok, message = register_user(form)
+        session = db_session.create_session()
+        user = User()
+        user.email = form.email.data
+        user.name = form.name.data
+        user.surname = form.surname.data
+        user.age = form.age.data
+        user.position = form.position.data
+        user.speciality = form.speciality.data
+        user.address = form.address.data
+        user.set_password(form.password.data)
+        try:
+            session.add(user)
+            session.commit()
+        except Exception as error:
+            log(error)
+            ok, message = False, "Error was occurred. Please, try again"
+        else:
+            ok, message = True, ""
         if ok:
             return redirect('/register')
-    return render_template("register.html", title="Register", form=form, message=message)
+    return render_template("register.html",
+                           title="Register",
+                           form=form,
+                           message=message)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -122,16 +95,83 @@ def logout():
     return redirect("/")
 
 
-@app.route("/addJob", methods=["GET", "POST"])
+@app.route("/job", methods=["GET", "POST"])
 @login_required
 def adding_job():
-    form = AddJobForm()
+    form = JobForm()
     message = ""
     if form.validate_on_submit():
-        ok, message = add_job(form)
+        session = db_session.create_session()
+        job = Jobs()
+        job.job = form.name.data
+        job.work_size = form.hours.data
+        job.collaborators = form.collaborators.data
+        job.team_leader = form.team_leader.data
+        job.creator = current_user.id
+        job.is_finished = form.finished.data
+        if job.is_finished:
+            job.end_date = datetime.datetime.now()
+        try:
+            session.add(job)
+            session.commit()
+        except Exception as error:
+            log(error)
+            ok, message = False, "Error was occurred. Please, try again"
+        else:
+            ok, message = True, ""
         if ok:
             return redirect('/')
-    return render_template("add_job.html", title="Adding a Job", form=form, message=message)
+    return render_template("job_form.html", title="Adding a Job",
+                           form=form,
+                           message=message,
+                           button="Add")
+
+
+@app.route("/job/<int:job_id>", methods=["GET", "POST"])
+@login_required
+def editing_job(job_id):
+    form = JobForm()
+    message = ""
+    if request.method == "GET":
+        session = db_session.create_session()
+        job = session.query(Jobs).filter(Jobs.id == job_id).first()
+        if job:
+            if current_user.id != 1 and current_user.id != job.creator:
+                abort(403)
+            form.name.data = job.job
+            form.team_leader.data = job.team_leader
+            form.hours.data = job.work_size
+            form.collaborators.data = job.collaborators
+            form.finished.data = job.is_finished
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        session = db_session.create_session()
+        job = session.query(Jobs).filter(Jobs.id == job_id).first()
+        if job:
+            if current_user.id != 1 and current_user.id != job.creator:
+                abort(403)
+            job.job = form.name.data
+            job.team_leader = form.team_leader.data
+            job.work_size = form.hours.data
+            job.collaborators  = form.collaborators.data
+            if job.is_finished:
+                if not form.finished.data:
+                    # было завершено, теперь - нет
+                    job.end_date = None
+                    job.is_finished = form.finished.data
+            else:
+                if form.finished.data:
+                    job.end_date = datetime.datetime.now()
+                    job.is_finished = form.finished.data
+            session.commit()
+            return redirect('/')
+        else:
+            abort(404)
+    return render_template("job_form.html", title="Editing a Job",
+                           form=form,
+                           message=message,
+                           button="Edit")
 
 
 @app.route("/cookie_test")

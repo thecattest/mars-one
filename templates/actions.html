@@ -11,7 +11,7 @@
     {% if current_user.is_authenticated %}
     <div class="row">
         <div class="col">
-            <a href="/addJob" class="btn btn-success">Add job</a>
+            <a href="/job" class="btn btn-secondary">Add job</a>
         </div>
     </div>
     {% endif %}
@@ -29,17 +29,27 @@
             <div class="col-2 title">Is finished</div>
         </div>
         <div class="row">
-            <div class="col-4 cell">{{action.title}}</div>
-            <div class="col-2 cell">{{action.leader}}</div>
-            <div class="col-2 cell">{{action.duration}} hours</div>
+            <div class="col-4 cell">{{action.job}}</div>
+            <div class="col-2 cell">{{action.user.name + " " + action.user.surname}}</div>
+            <div class="col-2 cell">{{action.work_size}} hours</div>
             <div class="col-2 cell">{{action.collaborators}}</div>
-            <div class="col-2 cell {% if not action.finished %} not-finished {% endif %}">
-                {% if not action.finished %} is not finished
+            <div class="col-2 cell {% if not action.is_finished %} not-finished {% endif %}">
+                {% if not action.is_finished %} is not finished
                 {% else %} is finished
                 {% endif %}
             </div>
         </div>
     </div>
+    {% if current_user.id == 1 or current_user.id == action.creator %}
+    <div class="row">
+        <div class="col-1">
+            <a href="/job/{{action.id}}" class="btn btn-warning">Edit</a>
+        </div>
+        <!--<div class="col-1">
+            <a href="/delete_job/{{action.id}}" class="btn btn-danger">Delete</a>
+        </div>-->
+    </div>
+    {% endif %}
     {% endfor %}
 </div>
 {% endblock %}

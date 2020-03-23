@@ -17,7 +17,7 @@ def team_leader_query():
     return choice
 
 
-class AddJobForm(FlaskForm):
+class JobForm(FlaskForm):
     name = StringField("Name of Job", validators=[DataRequired()])
     team_leader = SelectField("Team Leader", choices=team_leader_query(), coerce=int)
     hours = IntegerField("Work Hours", validators=[DataRequired()])

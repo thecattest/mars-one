@@ -19,8 +19,9 @@ def validate_collaborators(form, field):
         except ValueError:
             raise ValidationError("Use only numbers and commas")
         db_ids = list(int(user.id) for user in session.query(User).all())
-        if list(set(ids)) != ids:
-            raise ValidationError("Every collaborator must be mentioned only once")
+        for id in ids:
+            if ids.count(id) > 1:
+                raise ValidationError("Every collaborator must be mentioned only once")
         if not set(ids).issubset(set(db_ids)):
             ids = set(ids).difference(set(db_ids))
             not_in_base = ', '.join(list(str(id) for id in ids))

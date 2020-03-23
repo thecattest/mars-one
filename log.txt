@@ -40,3 +40,8 @@
 (Background on this error at: http://sqlalche.me/e/gkpj)
 2020-03-22 18:31:15.754495
 -----
+<class 'sqlalchemy.exc.StatementError'>: (builtins.TypeError) SQLite DateTime type only accepts Python datetime and date objects as input.
+[SQL: INSERT INTO jobs (team_leader, job, work_size, collaborators, creator, start_date, end_date, is_finished) VALUES (?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: [{'collaborators': '3, 4', 'end_date': '2020-03-23 16:13:22.089719', 'job': 'exploration of mineral resources', 'team_leader': 2, 'creator': 5, 'is_finished': True, 'work_size': 15}]]
+2020-03-23 16:13:22.093260
+-----
