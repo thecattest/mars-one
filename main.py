@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, make_response, sess
 from flask_login import LoginManager, login_user, login_required, logout_user
 
 from data import db_session
+db_session.global_init("db/mars.sqlite")
+
 from data.__all_models import *
 from forms.__all_forms import *
 
@@ -11,8 +13,6 @@ app = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
-
-db_session.global_init("db/mars.sqlite")
 
 
 @login_manager.user_loader
@@ -52,6 +52,25 @@ def register_user(form):
         return True, ""
 
 
+def add_job(form):
+    session = db_session.create_session()
+    job = Jobs()
+    job.job = form.name.data
+    job.work_size = form.hours.data
+    job.collaborators = form.collaborators.data
+    job.team_leader = form.team_leader.data
+    job.is_finished = form.finished.data
+    try:
+        session.add(job)
+        session.commit()
+    except Exception as error:
+        log(error)
+        return False, "Error was occurred. Please, try again"
+    else:
+        return True, ""
+
+
+
 @app.route("/")
 @app.route("/index")
 def index():
@@ -75,13 +94,12 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         ok, message = register_user(form)
-        print(message)
         if ok:
             return redirect('/register')
     return render_template("register.html", title="Register", form=form, message=message)
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
@@ -91,16 +109,28 @@ def login():
             login_user(user, remember=form.remember_me.data)
             return redirect("/")
         return render_template("login.html",
+                               title='Log in',
                                message="Password or login is incorrect",
                                form=form)
     return render_template('login.html', title='Log in', form=form)
 
 
-@app.route('/logout')
+@app.route("/logout")
 @login_required
 def logout():
     logout_user()
     return redirect("/")
+
+
+@app.route("/addJob", methods=["GET", "POST"])
+def adding_job():
+    form = AddJobForm()
+    message = ""
+    if form.validate_on_submit():
+        ok, message = add_job(form)
+        if ok:
+            return redirect('/')
+    return render_template("add_job.html", title="Adding a Job", form=form, message=message)
 
 
 @app.route("/cookie_test")
