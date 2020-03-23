@@ -8,11 +8,13 @@
         </div>
     </div>
 
+    {% if current_user.is_authenticated %}
     <div class="row">
         <div class="col">
             <a href="/addJob" class="btn btn-success">Add job</a>
         </div>
     </div>
+    {% endif %}
     
     {% for action in actions %}
     <div class="container-fluid item">

@@ -123,6 +123,7 @@ def logout():
 
 
 @app.route("/addJob", methods=["GET", "POST"])
+@login_required
 def adding_job():
     form = AddJobForm()
     message = ""

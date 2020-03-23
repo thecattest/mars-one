@@ -13,7 +13,6 @@ def validate_email(form, field):
 def validate_collaborators(form, field):
     session = db_session.create_session()
     ids = list(i for i in field.data.split(','))
-    print(ids)
     if field.data:
         try:
             ids = list(int(i) for i in ids)
