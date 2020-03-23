@@ -17,6 +17,9 @@
         <p class="col-md-3 col-sm-3 mission-user" title="log out">
             {% if current_user.is_authenticated %}
             <a class="alert-link" href="/logout">{{ current_user.name + " " + current_user.surname }}</a>
+            {% else %}
+            <a href="/register" class="btn btn-primary">Register</a>
+            <a href="/login" class="btn btn-success">Log in</a>
             {% endif %}
         </p>
         <p class="col-md-2 col-sm-3 mission-logo">Mars One</p>
