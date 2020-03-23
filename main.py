@@ -38,7 +38,16 @@ def index():
     actions = session.query(Jobs).all()
     return render_template("actions.html",
                            actions=actions,
-                           title="Список работ")
+                           title="Works log")
+
+
+@app.route("/departments_list")
+def departments_list():
+    session = db_session.create_session()
+    all_departments = session.query(Department).all()
+    return render_template("departments.html",
+                           title="Departments log",
+                           all_departments=all_departments)
 
 
 @app.route("/register", methods=['GET', 'POST'])
