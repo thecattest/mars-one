@@ -9,10 +9,9 @@
     </div>
 
     {% if current_user.is_authenticated %}
-    <div class="row">
-        <div class="col">
-            <a href="/job" class="btn btn-secondary">Add job</a>
-        </div>
+    <div class="buttons">
+        <a href="/job" class="btn btn-secondary">Add job</a>
+        <a href="/departments" class="btn btn-secondary">Departments</a>
     </div>
     {% endif %}
     
@@ -41,13 +40,9 @@
         </div>
     </div>
     {% if current_user.id == 1 or current_user.id == action.creator or current_user.id == action.team_leader %}
-    <div class="row">
-        <div class="col-1">
-            <a href="/job/{{action.id}}" class="btn btn-warning">Edit</a>
-        </div>
-        <div class="col-1">
-            <a href="/delete_job/{{action.id}}" class="btn btn-danger">Delete</a>
-        </div>
+    <div class="buttons">
+        <a href="/job/{{action.id}}" class="btn btn-warning">Edit</a>
+        <a href="/delete_job/{{action.id}}" class="btn btn-danger">Delete</a>
     </div>
     {% endif %}
     {% endfor %}

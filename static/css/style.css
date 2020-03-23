@@ -16,8 +16,12 @@
 }
 
 .item {
-    margin: 20px;
+    margin: 40px 20px 10px 20px;
     border: 2px solid gray;
+}
+
+.buttons {
+    margin: 1px 1px 1px 20px;
 }
 
 .action-title {
