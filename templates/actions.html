@@ -40,7 +40,7 @@
             </div>
         </div>
     </div>
-    {% if current_user.id == 1 or current_user.id == action.creator %}
+    {% if current_user.id == 1 or current_user.id == action.creator or current_user.id == action.team_leader %}
     <div class="row">
         <div class="col-1">
             <a href="/job/{{action.id}}" class="btn btn-warning">Edit</a>

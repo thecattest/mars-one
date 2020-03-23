@@ -149,7 +149,7 @@ def edit_job(job_id):
         session = db_session.create_session()
         job = session.query(Jobs).filter(Jobs.id == job_id).first()
         if job:
-            if current_user.id != 1 and current_user.id != job.creator:
+            if current_user.id != 1 and current_user.id != job.creator and current_user.id != job.team_leader:
                 abort(403)
             job.job = form.name.data
             job.team_leader = form.team_leader.data
@@ -180,7 +180,7 @@ def delete_job(job_id):
     session = db_session.create_session()
     job = session.query(Jobs).filter(Jobs.id == job_id).first()
     if job:
-        if current_user.id != 1 and current_user.id != job.creator:
+        if current_user.id != 1 and current_user.id != job.creator and current_user.id != job.team_leader:
             abort(403)
         session.delete(job)
         session.commit()
