@@ -39,6 +39,9 @@
     font-size: 20px;
     /*text-align: end;*/
     font-weight: 600;
+    color: black!important;
+    cursor: pointer;
+    text-decoration: none!important;
 }
 
 .mission-user{

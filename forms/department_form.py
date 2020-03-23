@@ -6,7 +6,8 @@ from data.db_session import create_session
 from validators import validate_collaborators
 
 from flask_wtf import FlaskForm
-from wtforms import IntegerField, SubmitField, StringField, SelectField, BooleanField
+from wtforms import SubmitField, StringField, SelectField
+from wtforms.fields.html5 import EmailField
 from wtforms.validators import DataRequired
 
 
@@ -17,10 +18,9 @@ def team_leader_query():
     return choice
 
 
-class JobForm(FlaskForm):
-    name = StringField("Name of Job", validators=[DataRequired()])
-    team_leader = SelectField("Team Leader", choices=team_leader_query(), coerce=int)
-    hours = IntegerField("Work Hours", validators=[DataRequired()])
-    collaborators = StringField("Collaborators", validators=[validate_collaborators])
-    finished = BooleanField("Is finished")
+class DepartmentForm(FlaskForm):
+    title = StringField("Title of Department", validators=[DataRequired()])
+    chief = SelectField("Chief", choices=team_leader_query(), coerce=int)
+    email = EmailField("Department Email", validators=[DataRequired()])
+    members = StringField("Members", validators=[validate_collaborators])
     submit = SubmitField()

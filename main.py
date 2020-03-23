@@ -104,6 +104,88 @@ def logout():
     return redirect("/")
 
 
+@app.route("/department", methods=["GET", "POST"])
+@login_required
+def add_department():
+    form = DepartmentForm()
+    message = ""
+    if form.validate_on_submit():
+        session = db_session.create_session()
+        department = Department()
+        department.title = form.title.data
+        department.chief = form.chief.data
+        department.members = form.members.data
+        department.email = form.email.data
+        try:
+            session.add(department)
+            session.commit()
+        except Exception as error:
+            log(error)
+            ok, message = False, "Error was occurred. Please, try again"
+        else:
+            ok, message = True, ""
+        if ok:
+            return redirect('/departments_list')
+    return render_template("department_form.html", title="Adding a Department",
+                           form=form,
+                           message=message,
+                           button="Add",
+                           action="Adding")
+
+
+@app.route("/department/<int:department_id>", methods=["GET", "POST"])
+@login_required
+def edit_department(department_id):
+    form = DepartmentForm()
+    message = ""
+    if request.method == "GET":
+        session = db_session.create_session()
+        department = session.query(Department).filter(Department.id == department_id).first()
+        if department:
+            if current_user.id != 1 and current_user.id != department.chief:
+                abort(403)
+            form.title.data = department.title
+            form.chief.data = department.chief
+            form.members.data = department.members
+            form.email.data = department.email
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        session = db_session.create_session()
+        department = session.query(Department).filter(Department.id == department_id).first()
+        if department:
+            if current_user.id != 1 and current_user.id != department.chief:
+                abort(403)
+            department.title = form.title.data
+            department.chief = form.chief.data
+            department.members = form.members.data
+            department.email = form.email.data
+            session.commit()
+            return redirect('/departments_list')
+        else:
+            abort(404)
+    return render_template("department_form.html", title="Editing a Department",
+                           form=form,
+                           message=message,
+                           button="Edit",
+                           action="Editing")
+
+
+@app.route("/delete_department/<int:department_id>", methods=["GET", "POST"])
+@login_required
+def delete_department(department_id):
+    session = db_session.create_session()
+    department = session.query(Department).filter(Department.id == department_id).first()
+    if department:
+        if current_user.id != 1 and current_user.id != department.chief:
+            abort(403)
+        session.delete(department)
+        session.commit()
+        return redirect("/departments_list")
+    else:
+        abort(404)
+
+
 @app.route("/job", methods=["GET", "POST"])
 @login_required
 def add_job():
@@ -133,7 +215,8 @@ def add_job():
     return render_template("job_form.html", title="Adding a Job",
                            form=form,
                            message=message,
-                           button="Add")
+                           button="Add",
+                           action="Adding a new Job")
 
 
 @app.route("/job/<int:job_id>", methods=["GET", "POST"])
@@ -163,7 +246,7 @@ def edit_job(job_id):
             job.job = form.name.data
             job.team_leader = form.team_leader.data
             job.work_size = form.hours.data
-            job.collaborators  = form.collaborators.data
+            job.collaborators = form.collaborators.data
             if job.is_finished:
                 if not form.finished.data:
                     # было завершено, теперь - нет
@@ -180,7 +263,8 @@ def edit_job(job_id):
     return render_template("job_form.html", title="Editing a Job",
                            form=form,
                            message=message,
-                           button="Edit")
+                           button="Edit",
+                           action="Editing")
 
 
 @app.route("/delete_job/<int:job_id>", methods=["GET", "POST"])
