@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, make_response, session, abort
+from flask import Flask, render_template, request, redirect, make_response, session, abort, jsonify
 # from flask_ngrok import run_with_ngrok
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
@@ -7,6 +7,8 @@ db_session.global_init("db/mars.sqlite")
 
 from data.__all_models import *
 from forms.__all_forms import *
+
+from jobs_api import blueprint
 
 import datetime
 import os
@@ -19,6 +21,23 @@ login_manager.init_app(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 
+def main():
+    app.register_blueprint(blueprint)
+    port = int(os.environ.get("PORT", 8000))
+    app.run(host='0.0.0.0', port=port)
+    # app.run()
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
+
+
+@app.errorhandler(400)
+def not_found(error):
+    return make_response(jsonify({'error': 'Bad request'}), 400)
+
+
 @login_manager.user_loader
 def load_user(user_id):
     session = db_session.create_session()
@@ -29,12 +48,6 @@ def log(error):
     message = str(type(error)) + ": " + str(error)
     with open('log.txt', 'a') as file:
         file.write(message + '\n' + str(datetime.datetime.now()) + '\n-----\n')
-
-
-def main():
-    port = int(os.environ.get("PORT", 8000))
-    app.run(host='0.0.0.0', port=port)
-    # app.run()
 
 
 @app.route("/")
