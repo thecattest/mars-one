@@ -195,9 +195,10 @@ def add_job():
         session = db_session.create_session()
         job = Jobs()
         job.job = form.name.data
+        job.team_leader = form.team_leader.data
+        job.kind = form.kind.data
         job.work_size = form.hours.data
         job.collaborators = form.collaborators.data
-        job.team_leader = form.team_leader.data
         job.creator = current_user.id
         job.is_finished = form.finished.data
         if job.is_finished:
@@ -228,10 +229,11 @@ def edit_job(job_id):
         session = db_session.create_session()
         job = session.query(Jobs).filter(Jobs.id == job_id).first()
         if job:
-            if current_user.id != 1 and current_user.id != job.creator:
+            if current_user.id != 1 and current_user.id != job.creator and current_user.id != job.team_leader:
                 abort(403)
             form.name.data = job.job
             form.team_leader.data = job.team_leader
+            form.kind.data = job.kind
             form.hours.data = job.work_size
             form.collaborators.data = job.collaborators
             form.finished.data = job.is_finished
@@ -245,6 +247,7 @@ def edit_job(job_id):
                 abort(403)
             job.job = form.name.data
             job.team_leader = form.team_leader.data
+            job.kind = form.kind.data
             job.work_size = form.hours.data
             job.collaborators = form.collaborators.data
             if job.is_finished:

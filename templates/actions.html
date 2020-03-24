@@ -23,14 +23,16 @@
         <div class="row">
             <div class="col-4 title">Title of a job</div>
             <div class="col-2 title">Team leader</div>
-            <div class="col-2 title">Duration</div>
+            <div class="col-1 title">Duration</div>
+            <div class="col-1 title">Hazard category</div>
             <div class="col-2 title">List of collaborators</div>
             <div class="col-2 title">Is finished</div>
         </div>
         <div class="row">
             <div class="col-4 cell">{{action.job}}</div>
             <div class="col-2 cell">{{action.user.name + " " + action.user.surname}}</div>
-            <div class="col-2 cell">{{action.work_size}} hours</div>
+            <div class="col-1 cell">{{action.work_size}} hours</div>
+            <div class="col-1 cell">{{action.kind}}</div>
             <div class="col-2 cell">{{action.collaborators}}</div>
             <div class="col-2 cell {% if not action.is_finished %} not-finished {% endif %}">
                 {% if not action.is_finished %} is not finished

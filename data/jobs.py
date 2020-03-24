@@ -17,11 +17,13 @@ class Jobs(SqlAlchemyBase):
     work_size = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
     collaborators = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     creator = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
+    kind = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("category.id"))
     start_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now, nullable=True)
     end_date = sqlalchemy.Column(sqlalchemy.DateTime, nullable=True)
     is_finished = sqlalchemy.Column(sqlalchemy.Boolean, nullable=True)
 
     user = orm.relation("User")
+    category = orm.relation("Category")
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)

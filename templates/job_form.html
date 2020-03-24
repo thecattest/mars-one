@@ -20,7 +20,7 @@
         </div>
     </div>
     <div class="form-row">
-        <div class="form-group col-md-7">
+        <div class="form-group col-md-6">
             {{form.team_leader.label}}
             {{ form.team_leader(class="form-control") }}
             {% for error in form.team_leader.errors %}
@@ -29,7 +29,16 @@
             </small>
             {% endfor %}
         </div>
-        <div class="form-group col-md-5">
+        <div class="form-group col-md-3">
+            {{form.kind.label}}
+            {{ form.kind(class="form-control") }}
+            {% for error in form.kind.errors %}
+            <small class="form-text red">
+                {{ error }}
+            </small>
+            {% endfor %}
+        </div>
+        <div class="form-group col-md-3">
             {{form.hours.label}}
             {{ form.hours(class="form-control", type="number", placeholder="Hours", required=True) }}
             {% for error in form.hours.errors %}
