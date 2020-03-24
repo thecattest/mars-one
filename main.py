@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, make_response, session, abort
+# from flask_ngrok import run_with_ngrok
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 from data import db_session
@@ -8,10 +9,13 @@ from data.__all_models import *
 from forms.__all_forms import *
 
 import datetime
+import os
+
 
 app = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(app)
+# run_with_ngrok(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 
@@ -28,7 +32,9 @@ def log(error):
 
 
 def main():
-    app.run(port=8000)
+    port = int(os.environ.get("PORT", 8000))
+    app.run(host='0.0.0.0', port=port)
+    # app.run()
 
 
 @app.route("/")
