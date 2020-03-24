@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, make_response, abort, request
+import datetime
 
 from data import db_session
 db_session.global_init("db/mars.sqlite")
@@ -75,7 +76,38 @@ def delete_job(job_id):
     session = db_session.create_session()
     job = session.query(Jobs).get(job_id)
     if not job:
-        return make_response(jsonify({'error': 'Not found'}), 404)
+        abort(404)
     session.delete(job)
+    session.commit()
+    return make_response(jsonify({'success': 'OK'}), 200)
+
+
+@blueprint.route("/api/jobs/", methods=["PUT"])
+def edit_job():
+    session = db_session.create_session()
+    keys = list(request.json.keys())
+    if "id" not in keys:
+        return make_response(jsonify({"error": "id must be specified"}), 400)
+    job = session.query(Jobs).get(request.json["id"])
+    if not job:
+        abort(404)
+    if "job" in keys:
+        job.job = request.json["job"]
+    if "team_leader" in keys:
+        job.team_leader = request.json["team_leader"]
+    if "work_size" in keys:
+        job.work_size = request.json["work_size"]
+    if "collaborators" in keys:
+        job.collaborators = request.json["collaborators"]
+    if "kind" in keys:
+        job.kind = request.json["kind"]
+    if "start_date" in keys:
+        job.start_date = request.json["start_date"]
+    if "is_finished" in keys:
+        if job.is_finished and not request.json["is_finished"]:
+            job.end_date = None
+        elif not job.is_finished and request.json["is_finished"]:
+            job.end_date = datetime.datetime.now()
+        job.is_finished = request.json["is_finished"]
     session.commit()
     return make_response(jsonify({'success': 'OK'}), 200)
