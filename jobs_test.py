@@ -30,21 +30,21 @@ def test_link(expected, func="jobs", method="GET", id="0", json={}, print_res=Fa
         print(response.json())
 
 
-test_link(200)
-test_link(200, id="1")
-test_link(404, id="999")
-test_link(404, id="q")
+# test_link(200, print_res=True)
+# test_link(200, id="1", print_res=True)
+# test_link(404, id="999")
+# test_link(404, id="q")
 
-test_link(400, method="POST")
-test_link(400, method="POST", json={"job": "test_job"})
-test_link(200, method="POST",
-          json={
-              "job": "test_job",
-              "team_leader": 1,
-              "work_size": 15,
-              "collaborators": "1, 2, 3",
-              "kind": "1",
-              "is_finished": False})
+# test_link(400, method="POST")
+# test_link(400, method="POST", json={"job": "test_job"})
+# test_link(200, method="POST",
+  #        json={
+   #           "job": "test_job",
+    #          "team_leader": 1,
+     #         "work_size": 15,
+      #        "collaborators": "1, 2, 3",
+       #       "kind": "1",
+        #      "is_finished": False})
 
-test_link(404, method="DELETE", id="999")
-test_link(200, method="DELETE", id="5")
+# test_link(404, method="DELETE", id="999")
+# test_link(200, method="DELETE", id="5")

@@ -17,7 +17,10 @@ def get_jobs():
     return make_response(
         jsonify(
             {
-                "jobs": [item.to_dict() for item in jobs]
+                "jobs": [item.to_dict(only=('id', 'job', 'work_size', 'collaborators', 'is_finished',
+                                            'kind', 'team_leader', 'start_date', 'end_date',
+                                            'creator', 'user.name', 'user.surname'))
+                         for item in jobs]
             }
         ),
         200
@@ -33,10 +36,13 @@ def get_one_job(job_id):
     return make_response(
         jsonify(
             {
-                "job": job.to_dict()
+                "job": job.to_dict(only=('id', 'job', 'work_size', 'collaborators', 'is_finished',
+                                        'kind', 'team_leader', 'start_date', 'end_date',
+                                         'creator', 'user.name', 'user.surname'))
             }
         ),
-        200)
+        200
+    )
 
 
 @blueprint.route("/api/jobs", methods=["POST"])
