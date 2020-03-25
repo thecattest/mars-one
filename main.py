@@ -8,7 +8,8 @@ db_session.global_init("db/mars.sqlite")
 from data.__all_models import *
 from forms.__all_forms import *
 
-from jobs_api import blueprint
+from jobs_api import jobs_blueprint
+from users_api import users_blueprint
 
 import datetime
 import os
@@ -22,7 +23,8 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 
 def main():
-    app.register_blueprint(blueprint)
+    app.register_blueprint(jobs_blueprint)
+    app.register_blueprint(users_blueprint)
     port = int(os.environ.get("PORT", 8000))
     app.run(host='0.0.0.0', port=port)
     # app.run()
