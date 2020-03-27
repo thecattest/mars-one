@@ -53,3 +53,28 @@ test_link(405, method="DELETE")
 test_link(200, method="DELETE", id="9")
 
 test_link(404, id="9")
+
+# ========================================
+
+test_link(200, func="jobs", print_res=True)
+test_link(404, func="jobs", id="999")
+test_link(404, func="jobs", id="q")
+test_link(200, func="jobs", id="1", print_res=True)
+
+test_link(400, func="jobs", method="POST")
+test_link(400, func="jobs", method="POST", json={"job": "aaaa"})
+test_link(200, func="jobs", method="POST", json={
+    "team_leader": 1,
+    "job": "job",
+    "work_size": 20,
+    "collaborators": "1, 2",
+    "kind": 1,
+    "is_finished": False
+})
+
+test_link(200, func="jobs", print_res=True, id="5")
+
+test_link(405, func="jobs", method="DELETE")
+test_link(200, func="jobs", method="DELETE", id="5")
+
+test_link(404, func="jobs", id="5")
