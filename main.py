@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, make_response, session, abort, jsonify
 # from flask_ngrok import run_with_ngrok
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from flask_restful import Api
 
 from data import db_session
 db_session.global_init("db/mars.sqlite")
@@ -11,11 +12,14 @@ from forms.__all_forms import *
 from jobs_api import jobs_blueprint
 from users_api import users_blueprint
 
+import users_resource
+
 import datetime
 import os
 
 
 app = Flask(__name__)
+api = Api(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 # run_with_ngrok(app)
@@ -25,6 +29,10 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 def main():
     app.register_blueprint(jobs_blueprint)
     app.register_blueprint(users_blueprint)
+
+    api.add_resource(users_resource.UsersListResource, '/api/v2/users')
+    api.add_resource(users_resource.UsersResource, '/api/v2/users/<int:user_id>')
+
     port = int(os.environ.get("PORT", 8000))
     app.run(host='0.0.0.0', port=port)
     # app.run()
@@ -33,11 +41,6 @@ def main():
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
-
-
-@app.errorhandler(400)
-def not_found(error):
-    return make_response(jsonify({'error': 'Bad request'}), 400)
 
 
 @login_manager.user_loader
