@@ -17,6 +17,8 @@ import jobs_resource
 
 import datetime
 import os
+import random
+import requests
 
 
 app = Flask(__name__)
@@ -59,6 +61,26 @@ def log(error):
         file.write(message + '\n' + str(datetime.datetime.now()) + '\n-----\n')
 
 
+def get_coord(city):
+    key = '40d1649f-0493-4b70-98ba-98533de7710b'
+    link = 'http://geocode-maps.yandex.ru/1.x/'
+    params = {
+        'apikey': key,
+        'geocode': city,
+        'format': 'json'
+    }
+    response = requests.get(link, params)
+    if response:
+        json_response = response.json()
+        toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
+        coords = toponym["Point"]["pos"]
+        return ','.join(coords.split())
+    else:
+        print('Error during request')
+        print("Http статус:", response.status_code, "(", response.reason, ")")
+        return None
+
+
 @app.route("/")
 @app.route("/index")
 def index():
@@ -92,6 +114,7 @@ def register():
         user.position = form.position.data
         user.speciality = form.speciality.data
         user.address = form.address.data
+        user.email = random.choice(['Moscow', 'New York', 'London', 'Paris', 'Rome', 'Los-Angeles'])
         user.set_password(form.password.data)
         try:
             session.add(user)
@@ -130,6 +153,20 @@ def login():
 def logout():
     logout_user()
     return redirect("/")
+
+
+@app.route('/users_show/<int:user_id>')
+def user_nostalgy(user_id):
+    db = db_session.create_session()
+    user = db.query(User).get(user_id)
+    if not user:
+       abort(404)
+    city = user.city_from
+    coords = get_coord(city)
+    yandex_link = f'https://static-maps.yandex.ru/1.x/?ll={coords}&spn=0.26557,0.23619&l=map&size=400,400'
+    return render_template("city_from.html",
+                           user=user,
+                           yandex_link=yandex_link)
 
 
 @app.route("/department", methods=["GET", "POST"])

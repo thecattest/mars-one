@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="col-12 col-md-10 col-lg-8 mx-auto">
+    <div class="container-fluid mx-auto my-4">
+        <div class="row text-center">
+            <h1 class="col-12">Nostalgy</h1>
+            <h2 class="col-12">{{user.name}} {{user.surname}}</h2>
+            <h5 class="col-12">Hometown {{user.city_from}}</h5>
+            <div class="col-12">
+                <img src="{{yandex_link}}" class="mx-auto" alt="Hometown">
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
