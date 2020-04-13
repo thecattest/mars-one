@@ -159,9 +159,11 @@ def logout():
 def user_nostalgy(user_id):
     db = db_session.create_session()
     user = db.query(User).get(user_id)
-    if not user:
-       abort(404)
-    city = user.city_from
+    response = requests.get(f'http://localhost:8000/api/v2/users/{user_id}').json()
+    if not 'user' in response:
+        return render_template("city_from.html", message='User not found')
+    user = response['user']
+    city = user['city_from']
     coords = get_coord(city)
     yandex_link = f'https://static-maps.yandex.ru/1.x/?ll={coords}&spn=0.26557,0.23619&l=map&size=400,400'
     return render_template("city_from.html",

@@ -18,7 +18,7 @@ class UsersResource(Resource):
         session = db_session.create_session()
         user = session.query(User).get(user_id)
         return jsonify({'user': user.to_dict(
-            only=('surname', 'name', 'age', 'position', 'speciality', 'address', 'email'))})
+            only=('surname', 'name', 'age', 'position', 'speciality', 'address', 'email', 'city_from'))})
 
     def delete(self, user_id):
         abort_if_user_not_found(user_id)
